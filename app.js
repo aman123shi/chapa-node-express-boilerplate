@@ -1,12 +1,11 @@
 const express = require("express");
 let axios = require("axios").default;
-var request = require("request-promise");
 
 const app = express();
 //api credentials
-CHAPA_PUBLIC_KEY = "CHAPUBK_TEST-aKAH2wGbsqXEjHIbfuEiqsgSjl2jQ8J2";
+CHAPA_PUBLIC_KEY = "XXXXXXXXXXXXXXXXX5555"; //get this from Chapa
 
-CHAPA_SECRET_KEY = "CHASECK_TEST-cuK7qk1gVkwa2KT473GIvpnGVj0MOi9S";
+CHAPA_SECRET_KEY = "XXxXXXXXXXX555555555"; //get this from Chapa
 
 let config = {
   headers: {
@@ -18,6 +17,7 @@ app.post("/order", async (req, res) => {
   //payment initiation
 
   try {
+    //TODO: populate from DB
     let tx_ref = "tx-myecommerce12345." + Date.now();
     let result = await axios.postForm(
       "https://api.chapa.co/v1/transaction/initialize",
@@ -38,7 +38,7 @@ app.post("/order", async (req, res) => {
 
     console.log(result.data);
 
-    //returning back the checkout url
+    //returning back the checkout url to Frontend
 
     res.send(result.data);
   } catch (error) {
@@ -55,30 +55,14 @@ app.get("/api/success", async (req, res) => {
   );
 
   try {
-    //https://api.chapa.co/v1/transaction/verify/tf_ref-some_ref
-    let options = {
-      method: "GET",
-      url: "https://api.chapa.co/v1/transaction/verify/" + req.query.tx_ref,
-      headers: {
-        Authorization: "Bearer " + CHAPA_SECRET_KEY,
-      },
-      json: true,
-    };
-    let resu = await request(options);
-    console.log("resuult " + resu);
-    res.send(resu);
-    // let result = await axios.get(
-    //   "https://api.chapa.dev/v1/transaction/verify/" + req.query.tx_ref,
-    //   {
-    //     headers: {
-    //       Authorization: "Bearer " + CHAPA_SECRET_KEY,
-    //     },
-    //   }
-    // );
+    let result = await axios.get(
+      "https://api.chapa.co/v1/transaction/verify/" + req.query.tx_ref,
+      config
+    );
 
     console.log("Result: " + result.data);
     //TODO: save transaction
-    res.send(" payment transaction result " + result.data);
+    res.send(" payment transaction result " + JSON.stringify(result.data));
   } catch (error) {
     console.log("something happened " + error);
     res.send(" something happened " + error);
@@ -86,8 +70,8 @@ app.get("/api/success", async (req, res) => {
 });
 app.listen(3001, () => console.log("app running on port 3001"));
 
-//CHAPA_WEBHOOK_SECRET='My_webook_secret_key123';
 /*
+  chapa card 
 
 Card number: 4200 0000 0000 0000
 cvv: 123
