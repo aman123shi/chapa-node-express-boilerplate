@@ -3,7 +3,6 @@ let axios = require("axios").default;
 
 const app = express();
 //api credentials
-CHAPA_PUBLIC_KEY = "XXXXXXXXXXXXXXXXX5555"; //get this from Chapa
 
 CHAPA_SECRET_KEY = "XXxXXXXXXXX555555555"; //get this from Chapa
 
@@ -23,7 +22,6 @@ app.post("/order", async (req, res) => {
       "https://api.chapa.co/v1/transaction/initialize",
       {
         amount: "300",
-        key: CHAPA_PUBLIC_KEY,
         currency: "ETB",
         email: "aman@gmail.com",
         first_name: "Abebe",
@@ -71,8 +69,7 @@ app.get("/api/success", async (req, res) => {
 app.listen(3001, () => console.log("app running on port 3001"));
 
 /*
-  chapa card 
-
+  chapa Testing Card
 Card number: 4200 0000 0000 0000
 cvv: 123
 Expiry: "12/34"
